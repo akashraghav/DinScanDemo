@@ -1,9 +1,7 @@
 package com.google.firebase.samples.apps.mlkit;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.util.Log;
-import android.util.Patterns;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -18,7 +16,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 
 public class FrameProcessor {
 
@@ -26,6 +23,13 @@ public class FrameProcessor {
     private boolean isProcessing;
     private Pattern pattern;
     private TextView tvProcessedText;
+
+    public static FrameProcessor getInstance(TextView tvProcessedText) {
+        FrameProcessor processor = new FrameProcessor();
+        processor.tvProcessedText = tvProcessedText;
+        processor.pattern = Pattern.compile("\\s[D][I][N](\\s|:|-|)[0-9]{3,8}\\s");
+        return processor;
+    }
 
     public void runTextRecognition(Bitmap bitmap) {
         isProcessing = true;
@@ -53,7 +57,7 @@ public class FrameProcessor {
     private void processTextRecognitionResult(FirebaseVisionText texts) {
         List<FirebaseVisionText.TextBlock> blocks = texts.getTextBlocks();
         if (blocks.size() == 0) {
-            Log.i("text data","No text found");
+            Log.i("text data", "No text found");
             return;
         }
         StringBuilder builder = new StringBuilder();
@@ -84,13 +88,6 @@ public class FrameProcessor {
 
     public boolean isProcessing() {
         return isProcessing;
-    }
-
-    public static FrameProcessor getInstance(TextView tvProcessedText) {
-        FrameProcessor processor = new FrameProcessor();
-        processor.tvProcessedText = tvProcessedText;
-        processor.pattern = Pattern.compile("\\s[D][I][N](\\s|:|-|)[0-9]{8}\\s");
-        return processor;
     }
 
 }
